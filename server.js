@@ -10,7 +10,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/nota', async (req, res) => {
   try {
-    const telemetry = (await axios.get('http://localhost:25555/api/ets2/telemetry')).data;
+    const hostname = req.hostname; // IP ou nome do host que fez a requisição
+    const telemetryUrl = `http://${hostname}:25555/api/ets2/telemetry`;
+
+    console.log('🔍 Buscando dados do ETS2 em:', telemetryUrl);
+
+    const telemetry = (await axios.get(telemetryUrl)).data;
 
     const job = telemetry.job;
     const vehicle = telemetry.truck;
@@ -38,7 +43,7 @@ app.get('/nota', async (req, res) => {
     console.error(error); // log completo
     res.status(500).json({
       erro: 'Falha ao gerar nota de carga.',
-      detalhe: error.message, // Envia motivo pro frontend
+      detalhe: error.message,
     });
   }
 });
