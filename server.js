@@ -9,26 +9,25 @@ app.use(cors());
 
 app.get('/nota', async (req, res) => {
   try {
-    const job = (await axios.get('http://localhost:25555/api/job')).data;
+    const telemetry = (await axios.get('http://localhost:25555/api/ets2/telemetry')).data;
 
-    const vehicle = (await axios.get('http://localhost:25555/api/vehicle')).data;
-
-    const telemetry = (await axios.get('http://localhost:25555/api/telemetry')).data;
+    const job = telemetry.job;
+    const vehicle = telemetry.truck;
 
     const dadosNota = {
-      emitenteNome: job.sourceCompany || '',
-      emitenteEndereco: `${job.sourceCity} - ${job.sourceCompany}`,
+      emitenteNome: job?.sourceCompany || '',
+      emitenteEndereco: `${job?.sourceCity} - ${job?.sourceCompany}`,
 
-      marca: vehicle.make || '',
-      placa: vehicle.licensePlate || 'SEM-PLACA',
-      motorista: telemetry.truck.driverName || '',
+      marca: vehicle?.make || '',
+      placa: vehicle?.licensePlate || 'SEM-PLACA',
+      motorista: telemetry?.truck?.driverName || '',
 
-      localManifesto: job.sourceCity,
+      localManifesto: job?.sourceCity,
       dataManifesto: new Date().toLocaleDateString('pt-BR'),
 
-      valor_frete: job.income,
-      empresa_remetente: job.sourceCompany,
-      empresa_destinataria: job.destinationCompany,
+      valor_frete: job?.income,
+      empresa_remetente: job?.sourceCompany,
+      empresa_destinataria: job?.destinationCompany,
     };
 
     const pdfBuffer = await gerarNotaPdf(dadosNota);
