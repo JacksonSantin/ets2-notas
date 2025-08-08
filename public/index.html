@@ -70,7 +70,9 @@
       fetch('/nota')
         .then((res) => {
           if (!res.ok) {
-            throw new Error("Erro ao gerar a nota fiscal.");
+            return res.json().then(err => {
+              throw new Error(err.detalhe || 'Erro ao gerar a nota fiscal.');
+            });
           }
           return res.blob();
         })
@@ -80,7 +82,7 @@
           resultado.style.display = 'block';
         })
         .catch((err) => {
-          erro.textContent = '❌ Não foi possível gerar a nota. Verifique se o ETS2 Telemetry está aberto.';
+          erro.textContent = `❌ ${err.message}`;
           console.error(err);
         })
         .finally(() => {
@@ -90,3 +92,4 @@
   </script>
 </body>
 </html>
+
