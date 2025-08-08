@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gerador de Nota - ETS2</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f2f2f2;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 10px 20px;
+      background-color: #0057e7;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    iframe {
+      margin-top: 30px;
+      width: 80%;
+      height: 600px;
+      border: 1px solid #ccc;
+    }
+
+    #erro {
+      color: red;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    #loading {
+      margin-top: 20px;
+      font-style: italic;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gerador de Nota Fiscal - ETS2</h1>
+  <button onclick="gerarNota()">Gerar Nota</button>
+
+  <div id="loading" style="display:none;">Gerando nota, por favor aguarde...</div>
+  <div id="erro"></div>
+
+  <div id="resultado" style="display:none;">
+    <h2>Nota Gerada:</h2>
+    <iframe id="pdfFrame"></iframe>
+  </div>
+
+  <script>
+    function gerarNota() {
+      const iframe = document.getElementById('pdfFrame');
+      const loading = document.getElementById('loading');
+      const erro = document.getElementById('erro');
+      const resultado = document.getElementById('resultado');
+
+      // Limpa mensagens anteriores
+      erro.textContent = '';
+      resultado.style.display = 'none';
+      loading.style.display = 'block';
+
+      // Requisição "manual" para checar status primeiro
+      fetch('/nota')
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Erro ao gerar a nota fiscal.");
+          }
+          return res.blob();
+        })
+        .then((blob) => {
+          const url = URL.createObjectURL(blob);
+          iframe.src = url;
+          resultado.style.display = 'block';
+        })
+        .catch((err) => {
+          erro.textContent = '❌ Não foi possível gerar a nota. Verifique se o ETS2 Telemetry está aberto.';
+          console.error(err);
+        })
+        .finally(() => {
+          loading.style.display = 'none';
+        });
+    }
+  </script>
+</body>
+</html>
