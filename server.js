@@ -18,14 +18,11 @@ app.get('/nota', async (req, res) => {
     const dadosNota = {
       emitenteNome: job?.sourceCompany || '',
       emitenteEndereco: `${job?.sourceCity || ''} - ${job?.sourceCompany || ''}`,
-
       marca: vehicle?.make || '',
       placa: vehicle?.licensePlate || 'SEM-PLACA',
       motorista: telemetry?.truck?.driverName || '',
-
       localManifesto: job?.sourceCity,
       dataManifesto: new Date().toLocaleDateString('pt-BR'),
-
       valor_frete: job?.income,
       empresa_remetente: job?.sourceCompany,
       empresa_destinataria: job?.destinationCompany,
@@ -37,8 +34,12 @@ app.get('/nota', async (req, res) => {
     res.send(pdfBuffer);
 
   } catch (error) {
-    console.error('Erro ao buscar dados do ETS2:', error.message);
-    res.status(500).json({ erro: 'Falha ao gerar nota de carga.' });
+    console.error('❌ Erro ao buscar dados do ETS2:', error.message);
+    console.error(error); // log completo
+    res.status(500).json({
+      erro: 'Falha ao gerar nota de carga.',
+      detalhe: error.message, // Envia motivo pro frontend
+    });
   }
 });
 
