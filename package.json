@@ -1,15 +1,17 @@
 {
   "name": "ets2-notas",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Gerador de notas para ETS2.",
+  "keywords": ["gerador notas", "ets2"],
+  "author": "Jackson Dhanyel Santin",
+  "license": "MIT",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "axios": "^1.11.0",
     "express": "^5.1.0",
     "pdfkit": "^0.17.1"

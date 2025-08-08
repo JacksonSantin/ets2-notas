@@ -1,7 +1,11 @@
 const express = require('express');
 const axios = require('axios');
+const cors = require("cors");
 const gerarNotaPdf = require('./gerarNotaPdf');
+
 const app = express();
+
+app.use(cors());
 
 app.get('/nota', async (req, res) => {
   try {
@@ -41,3 +45,5 @@ app.get('/nota', async (req, res) => {
 app.listen(3000, () => {
   console.log('Servidor rodando em http://localhost:3000');
 });
+
+module.exports = app;
